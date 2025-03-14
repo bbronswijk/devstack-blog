@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Code } from "lucide-react";
+import { Code, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DarkModeToggle } from "@/components/ui/darkModeToggle";
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -20,14 +20,14 @@ export function Header() {
   const { data: session } = useSession();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto flex items-center justify-between px-4">
         <Link href="/" className="flex h-16 items-center gap-2">
           <Code className="h-6 w-6 text-primary" />
           <span className="inline-block text-xl font-bold">DevStack</span>
         </Link>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           {session && (
             <Link href="/create" className="mr-10">
               <Button variant="outline">Create New Post</Button>
@@ -41,6 +41,9 @@ export function Header() {
             </Button>
           )}
           <DarkModeToggle />
+          <Link href="https://github.com/bbronswijk/devstack-blog">
+            <Github className="h-4 w-4" />
+          </Link>
         </div>
       </div>
     </header>
