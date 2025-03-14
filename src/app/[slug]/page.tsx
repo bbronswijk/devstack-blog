@@ -35,17 +35,17 @@ export default async function Page({
   return (
     <>
       <Image
-        className="mx-auto w-full max-w-[1600px] rounded-2xl px-2"
+        className="mx-auto w-full max-w-[1600px] rounded-2xl"
         src={`https://picsum.photos/seed/${slug}/2000/800`}
         alt="Random image"
         width={2000}
         height={800}
       />
 
-      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8"></div>
+      <div className="mx-auto max-w-3xl px-4 py-4 sm:px-6 md:py-12 lg:px-8"></div>
 
       <article className="prose prose-stone mx-auto max-w-3xl dark:prose-invert">
-        <h1 className="md:text-5xl">{post.title}</h1>
+        <h1 className="text-2xl md:text-5xl">{post.title}</h1>
         <MDXRemote
           source={post.content}
           options={{ mdxOptions: { rehypePlugins: [rehypeHighlight] } }}

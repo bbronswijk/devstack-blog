@@ -30,7 +30,7 @@ export default function RootLayout({
         >
           <NextAuthProvider>
             <Header />
-            <main className="container mx-auto min-h-screen px-4 pb-40 pt-20">
+            <main className="container mx-auto min-h-screen px-4 pb-40 pt-4 md:pt-20">
               {children}
             </main>
           </NextAuthProvider>
