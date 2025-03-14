@@ -10,7 +10,16 @@ import {
   generatePostFromTranscript,
 } from "@/lib/generate-post.api";
 
+import { auth } from "@/server/auth";
+import { revalidatePath } from "next/cache";
+
 export async function summarizeVideo(youtubeUrl: string): Promise<BlogPost> {
+  const session = await auth();
+
+  if (!session) {
+    throw new Error("Unauthorized: You must be logged in to add a product.");
+  }
+
   if (!youtubeUrl) {
     throw new Error(
       "No YouTube URL. Please provide a valid YouTube video URL.",
@@ -30,6 +39,8 @@ export async function summarizeVideo(youtubeUrl: string): Promise<BlogPost> {
     youtubeUrl,
     thumbnailUrl: `https://picsum.photos/seed/${post.slug}/2000/800`,
   });
+
+  revalidatePath(`/${post.slug}`);
 
   return post;
 }

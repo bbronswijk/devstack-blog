@@ -14,13 +14,23 @@ import {
 } from "@/components/ui/card";
 import { Loader2, Youtube } from "lucide-react";
 import { summarizeVideo } from "./actions";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export function Form() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const { status } = useSession();
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
+
+  if (status === "unauthenticated") {
+    return redirect("/");
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +50,7 @@ export function Form() {
   };
 
   return (
-    <Card className="mb-10">
+    <Card className="mx-auto mb-10 max-w-[800px]">
       <CardHeader>
         <div className="flex items-center gap-2">
           <Youtube className="h-6 w-6 text-red-600" />
