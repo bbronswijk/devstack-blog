@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Code, Github } from "lucide-react";
+import { Code, Github, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DarkModeToggle } from "@/components/ui/darkModeToggle";
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -29,8 +29,17 @@ export function Header() {
 
         <div className="flex items-center gap-4">
           {session && (
-            <Link href="/create" className="mr-10">
-              <Button variant="outline">Create New Post</Button>
+            <Link href="/create" className="md:mr-10">
+              <Button variant="outline" className="hidden md:block">
+                Create New Post
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="flex justify-center md:hidden"
+              >
+                <Plus />
+              </Button>
             </Link>
           )}
           {session ? (
