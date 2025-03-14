@@ -32,15 +32,15 @@ export default async function HomePage() {
                     />
                   </div>
                 )}
-                <CardContent className="flex-grow pt-6">
+                <CardContent className="flex flex-grow flex-col pt-6">
                   <h2 className="mb-2 text-xl font-semibold">{post.title}</h2>
 
                   {post.updatedAt && (
-                    <time className="mb-2 block text-sm text-muted-foreground">
+                    <time className="mb-4 block text-sm text-muted-foreground">
                       {format(new Date(post.updatedAt), "MMMM dd, yyyy")}
                     </time>
                   )}
-                  <div className="mb-6 flex flex-wrap gap-2">
+                  <div className="mb-10 flex flex-wrap gap-2">
                     {post.tags?.split(",").map((tag) => (
                       <Badge key={tag} variant="secondary" className="text-xs">
                         {tag}
