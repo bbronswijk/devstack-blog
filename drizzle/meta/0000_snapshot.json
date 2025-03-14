@@ -1,11 +1,11 @@
 {
-  "id": "189364d4-dd00-405b-9236-79c5bc3071d6",
+  "id": "3b12d509-520b-426f-ac70-b198794a3cb1",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.devstack-blog_account": {
-      "name": "devstack-blog_account",
+    "public.devstack_account": {
+      "name": "devstack_account",
       "schema": "",
       "columns": {
         "user_id": {
@@ -93,10 +93,10 @@
         }
       },
       "foreignKeys": {
-        "devstack-blog_account_user_id_devstack-blog_user_id_fk": {
-          "name": "devstack-blog_account_user_id_devstack-blog_user_id_fk",
-          "tableFrom": "devstack-blog_account",
-          "tableTo": "devstack-blog_user",
+        "devstack_account_user_id_devstack_user_id_fk": {
+          "name": "devstack_account_user_id_devstack_user_id_fk",
+          "tableFrom": "devstack_account",
+          "tableTo": "devstack_user",
           "columnsFrom": [
             "user_id"
           ],
@@ -108,8 +108,8 @@
         }
       },
       "compositePrimaryKeys": {
-        "devstack-blog_account_provider_provider_account_id_pk": {
-          "name": "devstack-blog_account_provider_provider_account_id_pk",
+        "devstack_account_provider_provider_account_id_pk": {
+          "name": "devstack_account_provider_provider_account_id_pk",
           "columns": [
             "provider",
             "provider_account_id"
@@ -118,8 +118,8 @@
       },
       "uniqueConstraints": {}
     },
-    "public.devstack-blog_post": {
-      "name": "devstack-blog_post",
+    "public.devstack_post": {
+      "name": "devstack_post",
       "schema": "",
       "columns": {
         "id": {
@@ -129,7 +129,7 @@
           "notNull": true,
           "identity": {
             "type": "byDefault",
-            "name": "devstack-blog_post_id_seq",
+            "name": "devstack_post_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",
@@ -139,17 +139,47 @@
             "cycle": false
           }
         },
-        "name": {
-          "name": "name",
+        "title": {
+          "name": "title",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "topic": {
+          "name": "topic",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tags": {
+          "name": "tags",
           "type": "varchar(256)",
           "primaryKey": false,
           "notNull": false
         },
-        "created_by": {
-          "name": "created_by",
-          "type": "varchar(255)",
+        "youtube_url": {
+          "name": "youtube_url",
+          "type": "varchar(256)",
           "primaryKey": false,
           "notNull": true
+        },
+        "thumbnail_url": {
+          "name": "thumbnail_url",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -166,26 +196,11 @@
         }
       },
       "indexes": {
-        "created_by_idx": {
-          "name": "created_by_idx",
-          "columns": [
-            {
-              "expression": "created_by",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
         "name_idx": {
           "name": "name_idx",
           "columns": [
             {
-              "expression": "name",
+              "expression": "title",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -197,26 +212,12 @@
           "with": {}
         }
       },
-      "foreignKeys": {
-        "devstack-blog_post_created_by_devstack-blog_user_id_fk": {
-          "name": "devstack-blog_post_created_by_devstack-blog_user_id_fk",
-          "tableFrom": "devstack-blog_post",
-          "tableTo": "devstack-blog_user",
-          "columnsFrom": [
-            "created_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.devstack-blog_session": {
-      "name": "devstack-blog_session",
+    "public.devstack_session": {
+      "name": "devstack_session",
       "schema": "",
       "columns": {
         "session_token": {
@@ -256,10 +257,10 @@
         }
       },
       "foreignKeys": {
-        "devstack-blog_session_user_id_devstack-blog_user_id_fk": {
-          "name": "devstack-blog_session_user_id_devstack-blog_user_id_fk",
-          "tableFrom": "devstack-blog_session",
-          "tableTo": "devstack-blog_user",
+        "devstack_session_user_id_devstack_user_id_fk": {
+          "name": "devstack_session_user_id_devstack_user_id_fk",
+          "tableFrom": "devstack_session",
+          "tableTo": "devstack_user",
           "columnsFrom": [
             "user_id"
           ],
@@ -273,8 +274,47 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.devstack-blog_user": {
-      "name": "devstack-blog_user",
+    "public.devstack_transcript": {
+      "name": "devstack_transcript",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "byDefault",
+            "name": "devstack_transcript_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "youtube_url": {
+          "name": "youtube_url",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.devstack_user": {
+      "name": "devstack_user",
       "schema": "",
       "columns": {
         "id": {
@@ -314,8 +354,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.devstack-blog_verification_token": {
-      "name": "devstack-blog_verification_token",
+    "public.devstack_verification_token": {
+      "name": "devstack_verification_token",
       "schema": "",
       "columns": {
         "identifier": {
@@ -340,8 +380,8 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "devstack-blog_verification_token_identifier_token_pk": {
-          "name": "devstack-blog_verification_token_identifier_token_pk",
+        "devstack_verification_token_identifier_token_pk": {
+          "name": "devstack_verification_token_identifier_token_pk",
           "columns": [
             "identifier",
             "token"

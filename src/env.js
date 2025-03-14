@@ -13,7 +13,8 @@ export const env = createEnv({
         : z.string().optional(),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_SECRET: z.string(),
-    GOOGLE_REDIRECT: z.string(),
+    GEMINI_API_KEY: z.string(),
+    SUPADATA_KEY: z.string(),
     DATABASE_URL: z.string().url(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
@@ -37,7 +38,8 @@ export const env = createEnv({
     AUTH_SECRET: process.env.AUTH_SECRET,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_SECRET: process.env.GOOGLE_SECRET,
-    GOOGLE_REDIRECT: process.env.GOOGLE_REDIRECT,
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+    SUPADATA_KEY: process.env.SUPADATA_KEY,
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
   },

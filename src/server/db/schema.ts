@@ -30,6 +30,8 @@ export const posts = createTable(
     title: varchar("title", { length: 256 }).notNull(),
     slug: varchar("slug", { length: 256 }).notNull(),
     content: text("content").notNull(),
+    topic: varchar("topic", { length: 256 }).notNull(),
+    tags: varchar("tags", { length: 256 }),
     youtubeUrl: varchar("youtube_url", { length: 256 }).notNull(),
     thumbnailUrl: varchar("thumbnail_url", { length: 256 }),
     createdAt: timestamp("created_at", { withTimezone: true })
@@ -43,6 +45,12 @@ export const posts = createTable(
     nameIndex: index("name_idx").on(example.title),
   }),
 );
+
+export const transcripts = createTable("transcript", {
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  content: text("content").notNull(),
+  youtubeUrl: varchar("youtube_url", { length: 256 }).notNull(),
+});
 
 export const users = createTable("user", {
   id: varchar("id", { length: 255 })

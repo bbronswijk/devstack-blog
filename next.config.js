@@ -5,6 +5,11 @@
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  transpilePackages: ["next-mdx-remote"],
+  images: {
+    domains: ["picsum.photos", "lh3.googleusercontent.com"],
+  },
+};
 
 export default config;
