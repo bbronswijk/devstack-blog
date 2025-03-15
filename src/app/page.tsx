@@ -6,6 +6,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { desc } from "drizzle-orm";
 import { format } from "date-fns";
+import readingTime from "reading-time";
+import { Clock } from "lucide-react";
 
 export default async function HomePage() {
   const blogPosts = await db
@@ -35,11 +37,17 @@ export default async function HomePage() {
                 <CardContent className="flex flex-grow flex-col pt-6">
                   <h2 className="mb-2 text-xl font-semibold">{post.title}</h2>
 
-                  {post.updatedAt && (
-                    <time className="mb-4 block text-sm text-muted-foreground">
-                      {format(new Date(post.updatedAt), "MMMM dd, yyyy")}
-                    </time>
-                  )}
+                  <div className="mb-4 flex justify-between text-muted-foreground">
+                    {post.updatedAt && (
+                      <time className="t block text-sm">
+                        {format(new Date(post.updatedAt), "MMMM dd, yyyy")}
+                      </time>
+                    )}
+                    <span className="flex items-center gap-1 text-sm">
+                      <Clock size="14" />
+                      {readingTime(post.content).text}
+                    </span>
+                  </div>
                   <div className="mb-10 flex flex-wrap gap-2">
                     {post.tags?.split(",").map((tag) => (
                       <Badge key={tag} variant="secondary" className="text-xs">

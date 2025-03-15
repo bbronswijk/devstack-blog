@@ -7,6 +7,8 @@ import { notFound } from "next/navigation";
 import rehypeHighlight from "rehype-highlight";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Clock } from "lucide-react";
+import readingTime from "reading-time";
 
 export async function generateStaticParams() {
   const slugs = await db.select({ slug: posts.slug }).from(posts);
@@ -46,6 +48,10 @@ export default async function Page({
 
       <article className="prose prose-stone mx-auto max-w-3xl dark:prose-invert">
         <h1 className="text-2xl md:text-5xl">{post.title}</h1>
+        <span className="flex items-center justify-end gap-1 text-sm">
+          <Clock size="14" />
+          {readingTime(post.content).text}
+        </span>
         <MDXRemote
           source={post.content}
           options={{ mdxOptions: { rehypePlugins: [rehypeHighlight] } }}
