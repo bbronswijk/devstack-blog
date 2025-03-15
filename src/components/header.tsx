@@ -50,7 +50,10 @@ export function Header() {
             </Button>
           )}
           <DarkModeToggle />
-          <Link href="https://github.com/bbronswijk/devstack-blog">
+          <Link
+            href="https://github.com/bbronswijk/devstack-blog"
+            target="_blank"
+          >
             <Github className="h-4 w-4" />
           </Link>
         </div>
