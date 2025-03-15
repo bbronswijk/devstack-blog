@@ -20,7 +20,7 @@ export default async function HomePage() {
       {blogPosts.length === 0 ? (
         <NoPosts />
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(min(480px,100%),1fr))] gap-6">
           {blogPosts.map((post) => (
             <Link key={post.slug} href={`/${post.slug}`}>
               <Card key={post.id} className="flex h-full flex-col">

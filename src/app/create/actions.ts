@@ -17,7 +17,7 @@ export async function summarizeVideo(youtubeUrl: string): Promise<BlogPost> {
   const session = await auth();
 
   if (!session) {
-    throw new Error("Unauthorized: You must be logged in to add a product.");
+    throw new Error("Unauthorized: You must be logged in to add a video.");
   }
 
   if (!youtubeUrl) {
