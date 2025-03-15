@@ -8,6 +8,8 @@ import { desc } from "drizzle-orm";
 import { format } from "date-fns";
 import readingTime from "reading-time";
 import { Clock } from "lucide-react";
+import { Hero } from "@/components/hero";
+import { ContentSection } from "@/components/section";
 
 export default async function HomePage() {
   const blogPosts = await db
@@ -15,13 +17,19 @@ export default async function HomePage() {
     .from(posts)
     .orderBy(desc(posts.updatedAt));
 
+  if (blogPosts.length === 0) {
+    return <NoPosts />;
+  }
+
+  const heroPost = blogPosts[0];
+
   return (
     <>
-      {blogPosts.length === 0 ? (
-        <NoPosts />
-      ) : (
+      {heroPost && <Hero post={heroPost} />}
+
+      <ContentSection>
         <div className="grid grid-cols-[repeat(auto-fill,minmax(min(480px,100%),1fr))] gap-6">
-          {blogPosts.map((post) => (
+          {blogPosts.slice(1).map((post) => (
             <Link key={post.slug} href={`/${post.slug}`}>
               <Card key={post.id} className="flex h-full flex-col">
                 {post.thumbnailUrl && (
@@ -63,7 +71,7 @@ export default async function HomePage() {
             </Link>
           ))}
         </div>
-      )}
+      </ContentSection>
     </>
   );
 }

@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Clock } from "lucide-react";
 import readingTime from "reading-time";
+import { ContentSection } from "@/components/section";
 
 export async function generateStaticParams() {
   const slugs = await db.select({ slug: posts.slug }).from(posts);
@@ -38,7 +39,7 @@ export default async function Page({
   }
 
   return (
-    <>
+    <ContentSection>
       <Image
         className="mx-auto w-full max-w-[1600px] rounded-2xl"
         src={`https://picsum.photos/seed/${slug}/2000/800`}
@@ -61,7 +62,7 @@ export default async function Page({
         />
         <CTA videoUrl={post.youtubeUrl} />
       </article>
-    </>
+    </ContentSection>
   );
 }
 
