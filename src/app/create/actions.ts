@@ -40,7 +40,7 @@ export async function summarizeVideo(youtubeUrl: string): Promise<BlogPost> {
     thumbnailUrl: `https://picsum.photos/seed/${post.slug}/2000/800`,
   });
 
-  revalidatePath(`/${post.slug}`);
+  revalidatePath(`/`);
 
   return post;
 }
