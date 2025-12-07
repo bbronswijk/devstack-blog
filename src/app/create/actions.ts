@@ -13,36 +13,72 @@ import {
 import { auth } from "@/server/auth";
 import { revalidatePath } from "next/cache";
 
-export async function summarizeVideo(youtubeUrl: string): Promise<BlogPost> {
+export type ActionState =
+  | { success: true; data: BlogPost; error?: never }
+  | { success: false; error: string; data?: never };
+
+export async function summarizeVideo(
+  prevState: ActionState | null,
+  formData: FormData,
+): Promise<ActionState> {
   const session = await auth();
 
   if (!session) {
-    throw new Error("Unauthorized: You must be logged in to add a video.");
+    return {
+      success: false,
+      error: "Unauthorized: You must be logged in to add a video.",
+    };
   }
 
-  if (!youtubeUrl) {
-    throw new Error(
-      "No YouTube URL. Please provide a valid YouTube video URL.",
-    );
+  const youtubeUrl = formData.get("youtubeUrl") as string;
+
+  if (!youtubeUrl || youtubeUrl.trim() === "") {
+    return {
+      success: false,
+      error: "No YouTube URL. Please provide a valid YouTube video URL.",
+    };
   }
 
-  const { content } = await getTranscript(sanitizedYoutubeUrl(youtubeUrl));
+  // Check if this YouTube URL was already summarized
+  const [existingPost] = await db
+    .select()
+    .from(posts)
+    .where(eq(posts.youtubeUrl, youtubeUrl));
 
-  const post = await generatePostFromTranscript(content);
+  if (existingPost) {
+    return {
+      success: false,
+      error: "This YouTube video has already been summarized.",
+    };
+  }
 
-  await db.insert(posts).values({
-    title: post.title,
-    slug: post.slug,
-    topic: post.topic,
-    tags: post.tags?.join(","),
-    content: post.content,
-    youtubeUrl,
-    thumbnailUrl: `https://picsum.photos/seed/${post.slug}/2000/800`,
-  });
+  try {
+    const { content } = await getTranscript(sanitizedYoutubeUrl(youtubeUrl));
 
-  revalidatePath(`/`);
+    const post = await generatePostFromTranscript(content);
 
-  return post;
+    await db.insert(posts).values({
+      title: post.title,
+      slug: post.slug,
+      topic: post.topic,
+      tags: post.tags?.join(","),
+      content: post.content,
+      youtubeUrl,
+      thumbnailUrl: `https://picsum.photos/seed/${post.slug}/2000/800`,
+    });
+
+    revalidatePath(`/`);
+
+    return { success: true, data: post };
+  } catch (err) {
+    return {
+      success: false,
+      error:
+        err instanceof Error
+          ? err.message
+          : "Failed to summarize video. Please try again.",
+    };
+  }
 }
 
 /**
@@ -67,7 +103,7 @@ const getTranscript = async (youtubeUrl: string) => {
     .returning();
 
   if (!item) {
-    throw new Error("Could not read transcript from database.");
+    throw { message: "Could not read transcript from database.", status: 500 };
   }
 
   return item;

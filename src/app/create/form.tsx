@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useActionState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,16 +13,26 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Loader2, Youtube } from "lucide-react";
-import { summarizeVideo } from "./actions";
+import { summarizeVideo, type ActionState } from "./actions";
 import { redirect, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
+const initialState: ActionState | null = null;
+
 export function Form() {
-  const [url, setUrl] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const router = useRouter();
   const { status } = useSession();
+  const [state, formAction, isPending] = useActionState(
+    summarizeVideo,
+    initialState,
+  );
+
+  // Redirect on success
+  useEffect(() => {
+    if (state?.success && state.data) {
+      router.push(`/${state.data.slug}`);
+    }
+  }, [state, router]);
 
   if (status === "loading") {
     return <p>Loading...</p>;
@@ -31,23 +41,6 @@ export function Form() {
   if (status === "unauthenticated") {
     return redirect("/");
   }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    try {
-      const { slug } = await summarizeVideo(url);
-      router.push(`/${slug}`);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to summarize video",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <Card className="mx-auto mb-10 max-w-[800px]">
@@ -62,18 +55,18 @@ export function Form() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form action={formAction} className="space-y-4">
           <div className="flex flex-col gap-2 sm:flex-row">
             <Input
               type="text"
+              name="youtubeUrl"
               placeholder="https://www.youtube.com/watch?v=..."
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
               className="flex-1"
               required
+              disabled={isPending}
             />
-            <Button type="submit" disabled={loading || !url}>
-              {loading ? (
+            <Button type="submit" disabled={isPending}>
+              {isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Summarizing...
@@ -84,8 +77,10 @@ export function Form() {
             </Button>
           </div>
 
-          {error && (
-            <div className="rounded-md bg-red-50 p-4 text-red-600">{error}</div>
+          {state && !state.success && state.error && (
+            <div className="rounded-md bg-red-50 p-4 text-red-600 dark:bg-red-950/50 dark:text-red-400">
+              {state.error}
+            </div>
           )}
         </form>
       </CardContent>
