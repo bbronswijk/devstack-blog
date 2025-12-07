@@ -10,7 +10,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "preview": "next build && next start",
@@ -34,13 +34,13 @@
     "highlight.js": "^11.11.1",
     "json5": "^2.2.3",
     "lucide-react": "^0.479.0",
-    "next": "^15.0.1",
+    "next": "16.0.7",
     "next-auth": "5.0.0-beta.25",
     "next-mdx-remote": "^5.0.0",
     "next-themes": "^0.4.6",
     "postgres": "^3.4.4",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "19.2.1",
+    "react-dom": "19.2.1",
     "reading-time": "^1.5.0",
     "rehype-highlight": "^7.0.2",
     "tailwind-merge": "^3.0.2",
@@ -48,15 +48,16 @@
     "zod": "^3.23.3"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.3",
     "@types/eslint": "^8.56.10",
     "@types/node": "^20.14.10",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.1.0",
     "@typescript-eslint/parser": "^8.1.0",
     "drizzle-kit": "^0.24.0",
-    "eslint": "^8.57.0",
-    "eslint-config-next": "^15.0.1",
+    "eslint": "^9.39.1",
+    "eslint-config-next": "16.0.7",
     "eslint-plugin-drizzle": "^0.2.3",
     "postcss": "^8.4.39",
     "prettier": "^3.3.2",
@@ -67,5 +68,11 @@
   "ct3aMetadata": {
     "initVersion": "7.38.1"
   },
-  "packageManager": "pnpm@9.15.4"
+  "packageManager": "pnpm@9.15.4",
+  "pnpm": {
+    "overrides": {
+      "@types/react": "19.2.7",
+      "@types/react-dom": "19.2.3"
+    }
+  }
 }
