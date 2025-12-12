@@ -3,10 +3,6 @@ import { prompt } from "@/app/create/prompt";
 import JSON5 from "json5";
 import { GoogleGenAI } from "@google/genai";
 
-type GeminiResponse = {
-  candidates: { content: { parts: { text: string }[] } }[];
-};
-
 export type BlogPost = {
   title: string;
   slug: string;
