@@ -1,6 +1,7 @@
 import { env } from "@/env";
 import { prompt } from "@/app/create/prompt";
 import JSON5 from "json5";
+import { GoogleGenAI } from "@google/genai";
 
 type GeminiResponse = {
   candidates: { content: { parts: { text: string }[] } }[];
@@ -14,6 +15,8 @@ export type BlogPost = {
   content: string;
 };
 
+const ai = new GoogleGenAI({});
+
 export const generatePostFromTranscript = async (transcript: string) => {
   console.log("performing gemini api call");
 
@@ -22,36 +25,15 @@ export const generatePostFromTranscript = async (transcript: string) => {
   );
   url.searchParams.set("key", env.GEMINI_API_KEY);
 
-  const geminiResponse = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+  const geminiResponse = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: `${prompt}: ${transcript}`,
+    config: {
+      responseMimeType: "application/json", // Force clean json response
     },
-    body: JSON.stringify({
-      generationConfig: {
-        response_mime_type: "application/json", // Force clean json response
-      },
-      contents: [
-        {
-          parts: [
-            {
-              text: `${prompt}: ${transcript}`,
-            },
-          ],
-        },
-      ],
-    }),
   });
 
-  console.log("gemini api call done");
-
-  if (!geminiResponse.ok) {
-    throw new Error("Failed to generate summary. Please try again later.");
-  }
-
-  const geminiData = (await geminiResponse.json()) as GeminiResponse;
-
-  const text = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
+  const text = geminiResponse.text;
 
   console.log("Generated text:", text);
 
