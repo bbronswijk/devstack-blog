@@ -4,8 +4,7 @@ import Link from "next/link";
 import { Code, Github, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DarkModeToggle } from "@/components/ui/darkModeToggle";
-import { signIn, signOut, useSession } from "next-auth/react";
-import React from "react";
+import { authClient } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -17,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function Header() {
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -45,7 +44,14 @@ export function Header() {
           {session ? (
             <UserDropdown />
           ) : (
-            <Button size="sm" onClick={() => signIn("google")}>
+            <Button
+              size="sm"
+              onClick={() =>
+                authClient.signIn.social({
+                  provider: "google",
+                })
+              }
+            >
               Login
             </Button>
           )}
@@ -63,7 +69,7 @@ export function Header() {
 }
 
 const UserDropdown = () => {
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
 
   return (
     <DropdownMenu>
@@ -81,7 +87,11 @@ const UserDropdown = () => {
         <DropdownMenuItem>{session?.user?.email}</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Button variant="outline" size="sm" onClick={() => signOut()}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => authClient.signOut()}
+          >
             Logout
           </Button>
         </DropdownMenuItem>

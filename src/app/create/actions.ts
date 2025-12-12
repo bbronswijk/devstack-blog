@@ -10,8 +10,9 @@ import {
   generatePostFromTranscript,
 } from "@/lib/generate-post.api";
 
-import { auth } from "@/server/auth";
 import { revalidatePath } from "next/cache";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export type ActionState =
   | { success: true; data: BlogPost; error?: never }
@@ -21,7 +22,9 @@ export async function summarizeVideo(
   prevState: ActionState | null,
   formData: FormData,
 ): Promise<ActionState> {
-  const session = await auth();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   if (!session) {
     return {

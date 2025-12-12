@@ -15,13 +15,13 @@ import {
 import { Loader2, Youtube } from "lucide-react";
 import { summarizeVideo, type ActionState } from "./actions";
 import { redirect, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 
 const initialState: ActionState | null = null;
 
 export function Form() {
   const router = useRouter();
-  const { status } = useSession();
+  const { data, error, isPending: isPendingAuth } = authClient.useSession();
   const [state, formAction, isPending] = useActionState(
     summarizeVideo,
     initialState,
@@ -34,11 +34,11 @@ export function Form() {
     }
   }, [state, router]);
 
-  if (status === "loading") {
+  if (isPendingAuth) {
     return <p>Loading...</p>;
   }
 
-  if (status === "unauthenticated") {
+  if (!data || error) {
     return redirect("/");
   }
 

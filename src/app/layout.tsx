@@ -2,7 +2,6 @@ import "@/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
-import NextAuthProvider from "@/lib/SessionProvider";
 import { ThemeProvider } from "@/lib/ThemeProvider";
 import { Header } from "@/components/header";
 
@@ -28,10 +27,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <NextAuthProvider>
-            <Header />
-            {children}
-          </NextAuthProvider>
+          <Header />
+          {children}
         </ThemeProvider>
       </body>
     </html>
