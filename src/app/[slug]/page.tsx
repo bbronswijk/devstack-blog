@@ -10,6 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Clock } from "lucide-react";
 import readingTime from "reading-time";
 import { ContentSection } from "@/components/section";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { DeletePost } from "./delete-post";
 
 export async function generateStaticParams() {
   const slugs = await db.select({ slug: posts.slug }).from(posts);
@@ -27,6 +30,10 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   const [post] = await db
     .select()
@@ -52,10 +59,14 @@ export default async function Page({
 
       <article className="prose prose-stone mx-auto max-w-3xl dark:prose-invert">
         <h1 className="text-2xl md:text-5xl">{post.title}</h1>
-        <span className="flex items-center justify-end gap-1 text-sm">
-          <Clock size="14" />
-          {readingTime(post.content).text}
-        </span>
+        <div className="flex items-center justify-between gap-2">
+          <span className="flex items-center justify-end gap-1 text-sm">
+            <Clock size="14" />
+            {readingTime(post.content).text}
+          </span>
+
+          {session ? <DeletePost slug={slug} /> : <div />}
+        </div>
         <MDXRemote
           source={post.content}
           options={{ mdxOptions: { rehypePlugins: [rehypeHighlight] } }}
