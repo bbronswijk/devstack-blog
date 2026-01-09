@@ -30,14 +30,15 @@ export default async function HomePage() {
       <ContentSection>
         <div className="grid grid-cols-[repeat(auto-fill,minmax(min(480px,100%),1fr))] gap-6">
           {blogPosts.slice(1).map((post) => (
-            <Link key={post.slug} href={`/${post.slug}`}>
+            <Link key={post.id} href={`/${post.slug}`}>
               <Card key={post.id} className="flex h-full flex-col">
                 {post.thumbnailUrl && (
                   <div className="relative h-48 w-full">
                     <Image
                       src={post.thumbnailUrl}
                       alt={post.title}
-                      fill
+                      width={500}
+                      height={190}
                       className="rounded-t-lg object-cover"
                     />
                   </div>

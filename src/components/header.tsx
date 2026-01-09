@@ -1,22 +1,16 @@
-"use client";
-
 import Link from "next/link";
 import { Code, Github, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DarkModeToggle } from "@/components/ui/darkModeToggle";
 import { authClient } from "@/lib/auth-client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { UserDropdown } from "@/components/UserDropdown";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
-export function Header() {
-  const { data: session } = authClient.useSession();
+export async function Header() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -41,8 +35,8 @@ export function Header() {
               </Button>
             </Link>
           )}
-          {session ? (
-            <UserDropdown />
+          {session?.user ? (
+            <UserDropdown user={session.user} />
           ) : (
             <Button
               size="sm"
@@ -67,35 +61,3 @@ export function Header() {
     </header>
   );
 }
-
-const UserDropdown = () => {
-  const { data: session } = authClient.useSession();
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Avatar className="h-8 w-8">
-          {session?.user?.image && <AvatarImage src={session?.user?.image} />}
-          <AvatarFallback>
-            {session?.user?.name ? session.user.name[0] : "A"}
-          </AvatarFallback>
-        </Avatar>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>{session?.user?.name}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>{session?.user?.email}</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => authClient.signOut()}
-          >
-            Logout
-          </Button>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};
