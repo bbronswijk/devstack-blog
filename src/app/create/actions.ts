@@ -13,15 +13,16 @@ import {
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export type ActionState =
   | { success: true; data: BlogPost; error?: never }
   | { success: false; error: string; data?: never };
 
 export async function summarizeVideo(
-  prevState: ActionState | null,
+  prevState: ActionState | null | void,
   formData: FormData,
-): Promise<ActionState> {
+): Promise<ActionState | void> {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -55,10 +56,12 @@ export async function summarizeVideo(
     };
   }
 
+  let post: BlogPost;
+
   try {
     const { content } = await getTranscript(sanitizedYoutubeUrl(youtubeUrl));
 
-    const post = await generatePostFromTranscript(content);
+    post = await generatePostFromTranscript(content);
 
     await db.insert(posts).values({
       title: post.title,
@@ -69,10 +72,6 @@ export async function summarizeVideo(
       youtubeUrl,
       thumbnailUrl: `https://picsum.photos/seed/${post.slug}/2000/800`,
     });
-
-    revalidatePath(`/`);
-
-    return { success: true, data: post };
   } catch (err) {
     return {
       success: false,
@@ -82,6 +81,9 @@ export async function summarizeVideo(
           : "Failed to summarize video. Please try again.",
     };
   }
+
+  revalidatePath(`/`);
+  redirect(`/${post.slug}`);
 }
 
 /**

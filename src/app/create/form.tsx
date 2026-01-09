@@ -14,25 +14,17 @@ import {
 } from "@/components/ui/card";
 import { Loader2, Youtube } from "lucide-react";
 import { summarizeVideo, type ActionState } from "./actions";
-import { redirect, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
-const initialState: ActionState | null = null;
+const initialState: ActionState | null | void = null;
 
 export function Form() {
-  const router = useRouter();
   const { data, error, isPending: isPendingAuth } = authClient.useSession();
   const [state, formAction, isPending] = useActionState(
     summarizeVideo,
     initialState,
   );
-
-  // Redirect on success
-  useEffect(() => {
-    if (state?.success && state.data) {
-      router.push(`/${state.data.slug}`);
-    }
-  }, [state, router]);
 
   if (isPendingAuth) {
     return <p>Loading...</p>;
@@ -77,7 +69,7 @@ export function Form() {
             </Button>
           </div>
 
-          {state && !state.success && state.error && (
+          {!!state && !state.success && state.error && (
             <div className="rounded-md bg-red-50 p-4 text-red-600 dark:bg-red-950/50 dark:text-red-400">
               {state.error}
             </div>
