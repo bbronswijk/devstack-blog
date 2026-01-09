@@ -2,10 +2,10 @@ import Link from "next/link";
 import { Code, Github, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DarkModeToggle } from "@/components/ui/darkModeToggle";
-import { authClient } from "@/lib/auth-client";
 import { UserDropdown } from "@/components/UserDropdown";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { LoginButton } from "@/components/Login";
 
 export async function Header() {
   const session = await auth.api.getSession({
@@ -38,16 +38,7 @@ export async function Header() {
           {session?.user ? (
             <UserDropdown user={session.user} />
           ) : (
-            <Button
-              size="sm"
-              onClick={() =>
-                authClient.signIn.social({
-                  provider: "google",
-                })
-              }
-            >
-              Login
-            </Button>
+            <LoginButton />
           )}
           <DarkModeToggle />
           <Link
