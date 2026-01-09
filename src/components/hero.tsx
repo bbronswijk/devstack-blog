@@ -46,9 +46,9 @@ export function Hero({ post }: { post: HeroPost }) {
               <Image
                 src={post.thumbnailUrl}
                 alt={post.title}
-                width={750}
+                width={480}
                 height={400}
-                className="object-cover"
+                className="min-h-full min-w-full object-cover"
                 priority
               />
             )}

@@ -39,7 +39,7 @@ export default async function HomePage() {
                       alt={post.title}
                       width={500}
                       height={190}
-                      className="rounded-t-lg object-cover"
+                      className="min-h-full min-w-full rounded-t-lg object-cover"
                     />
                   </div>
                 )}
